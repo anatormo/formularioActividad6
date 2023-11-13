@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import'./estilos.css';
 
 function Formulario() {
     /*declaracion de las variable que necesitamos*/
@@ -7,96 +8,76 @@ function Formulario() {
     const [mail, setMail] = useState("");
     const [sexo, setSexo] = useState("");
     const [mensaje, setMensaje] = useState("");
-    const [mensajeError, setMensajeError] = useState('');
-   
-    const handleSubmitNombre = () => { 
-        if (nombre.length > 0 && nombre.length <=10){
-            return true;
-        } else{
-            return false;
-        }
-    }
-
-    const handleSubmitApellido = () => { 
-        if (apellido.length > 0 && apellido.length <=20) {
-            setMensajeError('Campo obligatorio, no puede contener mas de 20 caracteres');
-        } else{
-            setMensajeError ('');
-        }
-    }
+    const [terminos, setTerminos] = useState();
     
-    const handleSubmitMail = () => {
-        if (mail.includes('@') && mail.length >0 && mail.length <= 20) {
-        setMensajeError('Inavalid email address entered!');
-        } else{
-        setMensajeError ('');
+    /*creamos la funcion de handleSubmit: manejo del envio, utilizando el hook useCallback: usar devolucion de llamada,
+    para saltarse la renderizacion de los componentes y guardar su valor así en el return evaluara las condiciones */
+
+    const handleSubmit = useCallback ((e) => {
+        e.preventDefault();
+
+        /*condicion para el nombre */
+        if (nombre.length === 0 || nombre.length > 10){
+            return alert('Nombre es campo obligatorio, máximo 10 caractéres');
         }
-    }
 
-    const handleSubmitSexo = () => {
-        if (sexo.includes('@') && mail.length >0 && mail.length <= 20) {
-            setMensajeError('Inavalid email address entered!');
-        } else{
-            setMensajeError ('');
+        /*condicion para el apellido */
+        if (apellido.length === 0 || apellido.length > 20) {
+            return alert ('Apellido es campo obligatorio, máximo 20 caracteres');
         }
-    }
 
-    const handleSubmitMensaje = () => {
-        if (mensaje.length <= 500) {
-        setMensajeError('Inavalid email address entered!');
-        } else{
-        setMensajeError ('');
+        /*condicion para el mail */
+        if (!mail.includes('@') || !mail.includes('.') || mail.length === 0 || mail.length > 20) {
+            return alert ('Introduce un correo electrónico válido');
         }
-    }
 
-    const handleSubmit = (e) => {
-        if (handleSubmitNombre && handleSubmitApellido && handleSubmitMail && handleSubmitSexo && handleSubmitMensaje === true){
-            setMensajeError('Datos mandados correctamente');
-        } else{
-        setMensajeError ('Los campos son incorrectos');
-
-
+        /*condicion para el mensaje */
+        if (mensaje.length > 500 ) {
+            return alert ('El campo contiene más de 500 caractéres');
         }
-    }
 
+        /*condicion para los terminos */
+        if (!terminos) {
+            return alert('Debes aceptar los términos y condiciones.');
+          }
+    });
     
     return (
-      <form onSubmit={(e) => (e.preventDefault())}> 
-        <h1>Formulario de contacto</h1>
-        <p>Nombre: </p>
-        <p onSubmit={handleSubmitNombre}></p>
-        <input value={nombre}
-            onChange={() => setNombre(nombre.target.value)}/>
+    
+      <form className = "formulario" onSubmit={handleSubmit}> 
+        <h1 >Formulario de contacto</h1>
+        <p>Nombre: <input value={nombre}
+            onChange={(e) => setNombre(e.target.value)}/>
+        </p>
 
-        <p>Apellido: </p>
-        <p onSubmit={handleSubmitApellido}></p>
-        <input value={apellido}
-            onChange={() => setApellido(apellido.target.value)}/>
+        <p>Apellido: <input value={apellido}
+            onChange={(e) => setApellido(e.target.value)}/>
+        </p>
 
-        <p>Mail: </p>
-        <p onSubmit={handleSubmitMail}></p>
-        <input value={mail}
-            onChange={() => setMail(mail.target.value)}/>
+        <p>Mail:    <input value={mail}
+            onChange={(e) => setMail(e.target.value)}/>
+        </p>
 
-        <p>Sexo: </p>
-        <p onSubmit={handleSubmitSexo}></p>
-        <input value={sexo}
-            onChange={() => setSexo(sexo.target.value)}/>
+        <p>Sexo: <select name="sexo" value={sexo} onChange={(e) => setSexo(e.target.value)}>
+            <option value="Masculino"></option>  
+            <option value="Masculino">Masculino</option>
+            <option value="Femenino">Femenino</option>
+            </select>
+        </p>
 
-        <p>Mensaje: </p>
-        <p onSubmit={handleSubmitMensaje}></p>
-        <input value={mensaje}
-            onChange={() => setMensaje(mensaje.target.value)}/>
-
-        <br></br> <br></br>
-         
-         <button type="submit">Submit</button>
-
-         
-       
-       {mensajeError && <p>{mensajeError}</p>}
+        <p>Mensaje: <textarea value={mensaje}
+            onChange={(e) => setMensaje(e.target.value)}/><br></br>
+            <p> Te quedan {500 - mensaje.length} caracteres.</p>
+        </p>
+        <br></br> 
+        <label>
+        <input type="checkbox"  checked={terminos} 
+        onChange={(e) => setTerminos(e.target.value)} />
+        Acepto los términos y condiciones
+      </label>
+      <br></br> <br></br> 
+         <button className = "button" type="submit">Submit</button>
       </form>
     );
-  }
-  
+} 
   export default Formulario;

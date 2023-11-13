@@ -1,0 +1,23 @@
+
+  
+    .formulario {
+      position: relative;
+      width: 450px;
+      height: 450px;
+      margin: 0 auto; /* Centrar el formulario en la página */
+      padding: 3em;
+      text-align: left;
+      box-sizing: content-box;
+      background: #fff;
+      border: 1px solid #0f0f0f; /* Agregar un borde alrededor del formulario */
+  }
+ 
+  button {
+    padding: 5px;
+    font: bold 1em sans-serif;
+    border: 2px solid #333;
+    border-radius: 5px;
+    background: none;
+    cursor: pointer;
+  }
+  
